@@ -36,145 +36,141 @@
       <% if (success && success.length > 0) { %>
         <div class="alert alert-success mt-3 flash-message" role="alert"><i class="fas fa-check-circle"></i>&nbsp;&nbsp;<%= success %> </div>
       <% } %>
-        <div class="accordion my-5" id="accordionDashboard">
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="headingOne">
-              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                <h3><small><i class="far fa-clock"></i></small> <strong>Track all projects</strong></h3>
-              </button>
-            </h2>
-            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionDashboard">
-              <div class="accordion-body">
-                <% if(Object.keys(projects).length > 0) { %>
-                <table class="table" id="all-projects">
-                  <% projects.forEach(function(project){ %>
-                    <tr class="<%= project.Status == 'Running' ? 'active-timer' : '' %>">
-                      <td style="border-left:10px solid <%= project.Color %>;" class="align-middle"><%= project.Name %></td>
-                      <td class="align-middle"><strong><%= project.Time_spent %></strong></td>
-                      <td class="align-middle project-timer text-center">
-                      <% if(ActiveTimer && ActiveTimer.projectId) { %>
-                        <% if(project.Id == ActiveTimer.projectId) { %>
-                          <span id="timer-<%= project.Id %>" class="badge rounded-pill"><%= ActiveTimer.timer %></span>
-                        <% } else { %>
-                          <span id="timer-<%= project.Id %>" class="badge rounded-pill">00:00:00</span>
-                        <% } %>
-                      <% } else { %>
-                        <span id="timer-<%= project.Id %>" class="badge rounded-pill">00:00:00</span>
-                      <% } %>
-                      </td>
-                      <td class="align-middle">
-                      <% if(project.Status == 'Running'){ %>
-                        <div class="text-center">
-                          <button data-bs-toggle="modal" data-bs-target="#modalStopTimer" class="timer-control">
-                            <i class="fas fa-pause"></i>
-                          </button>
-                        </div>
 
-                        <div class="modal fade" id="modalStopTimer" tabindex="-1" aria-labelledby="stop-timer-modal-header" aria-hidden="true">
-                          <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h1 class="modal-title fs-5 text-dark" id="stop-timer-modal-header"><strong>Stop Timer</strong></h1>
+        <div id="all-projects-container">
+          <h3 class="mb-4"><small><i class="fas fa-clock"></i></small> <strong>All Projects</strong></h3>
+          <% if(Object.keys(projects).length > 0) { %>
+            <table class="table" id="all-projects">
+              <% projects.forEach(function(project){ %>
+                <tr class="<%= project.Status == 'Running' ? 'active-timer' : '' %>">
+                  <td style="border-left:10px solid <%= project.Color %>;" class="align-middle"><%= project.Name %></td>
+                  <td class="align-middle"><strong><%= project.Time_spent %></strong></td>
+                  <td class="align-middle project-timer text-center">
+                  <% if(ActiveTimer && ActiveTimer.projectId) { %>
+                    <% if(project.Id == ActiveTimer.projectId) { %>
+                      <span id="timer-<%= project.Id %>" class="badge rounded-pill"><%= ActiveTimer.timer %></span>
+                    <% } else { %>
+                      <span id="timer-<%= project.Id %>" class="badge rounded-pill">00:00:00</span>
+                    <% } %>
+                  <% } else { %>
+                    <span id="timer-<%= project.Id %>" class="badge rounded-pill">00:00:00</span>
+                  <% } %>
+                  </td>
+                  <td class="align-middle">
+                  <% if(project.Status == 'Running'){ %>
+                    <div class="text-center">
+                      <button data-bs-toggle="modal" data-bs-target="#modalStopTimer" class="timer-control">
+                        <i class="fas fa-pause"></i>
+                      </button>
+                    </div>
+
+                    <div class="modal fade" id="modalStopTimer" tabindex="-1" aria-labelledby="stop-timer-modal-header" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5 text-dark" id="stop-timer-modal-header"><strong>Stop Timer</strong></h1>
+                          </div>
+                          <div class="modal-body">
+                            <form action="/run" method="POST" id="running-form">
+                              <input type="hidden" value="<%= project.Id %>" name="projectId">
+                              <div class="mb-3">
+                                <textarea class="form-control" id="project-description" name="projectDescription" placeholder="Note" rows="5" style="resize:none;"></textarea>
                               </div>
-                              <div class="modal-body">
-                                <form action="/run" method="POST" id="running-form">
-                                  <input type="hidden" value="<%= project.Id %>" name="projectId">
-                                  <div class="mb-3">
-                                    <textarea class="form-control" id="project-description" name="projectDescription" placeholder="Note" rows="5" style="resize:none;"></textarea>
-                                  </div>
-                                  <button type="submit" class="btn btn-success">Save</button>
-                                </form>
-                              </div>
-                            </div>
+                              <button type="submit" class="btn btn-success">Save</button>
+                            </form>
                           </div>
                         </div>
-                      <% } else{ %>
-                        <div class="text-center">
-                          <form action="/pause" method="POST" style="display: inline;">
-                            <input type="hidden" value="<%= project.Id %>" name="projectId">
-                            <button type="submit" class="timer-control">
-                                <i class="fas fa-play"></i>
-                            </button>
-                          </form>
-                        </div>
-                      <% } %>
-                      </td>
-                    </tr>
-                  <% }); %>
-                </table>
-                <% } else { %>
-                  <p style="font-size:20px;">Aggiungi almeno un progetto per incominciare a tracciare! 😃</p>
-                <% } %>
-                <% if (trackError && trackError.length > 0) { %>
-                  <div class="alert alert-danger mt-3 flash-message" role="alert"><i class="fas fa-check-circle"></i>&nbsp;&nbsp;<%= trackError %> </div>
-                <% } %>
-              </div>
-            </div>
-          </div>
-
-          <!-- Add New Project -->
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="headingTwo">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                <h3><small><i class="fas fa-plus"></i></small> <strong>Track a new project</strong></h3>
-              </button>
-            </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionDashboard">
-              <div class="accordion-body">
-                <form action="/newProject" method="POST" class="mt-3">
-                  <div class="mb-3">
-                    <input type="text" class="form-control" required id="project-name" name="projectName" placeholder="Nome del progetto">
-                  </div>
-                  <div class="mb-3">
-                    <label for="project-color">Etichetta:</label>
-                    <input type="color" class="form-control mt-2" style="width:50px;" required id="project-color" name="projectColor" value="#ff0000">
-                  </div>
-                  <button type="submit" class="btn btn-success"><strong>Add</strong></button>
-                  <% if (error && error.length > 0) { %>
-                    <div class="alert alert-danger mt-3 flash-message" role="alert"><i class="fas fa-times-circle"></i>&nbsp;&nbsp; <%= error %> </div>
+                      </div>
+                    </div>
+                  <% } else{ %>
+                    <div class="text-center">
+                      <form action="/pause" method="POST" style="display: inline;">
+                        <input type="hidden" value="<%= project.Id %>" name="projectId">
+                        <button type="submit" class="timer-control">
+                            <i class="fas fa-play"></i>
+                        </button>
+                      </form>
+                    </div>
                   <% } %>
-                </form>
+                  </td>
+                </tr>
+              <% }); %>
+            </table>
+            <% } else { %>
+              <p style="font-size:20px;">Aggiungi almeno un progetto per incominciare a tracciare! 😃</p>
+            <% } %>
+            <% if (trackError && trackError.length > 0) { %>
+              <div class="alert alert-danger mt-3 flash-message" role="alert"><i class="fas fa-check-circle"></i>&nbsp;&nbsp;<%= trackError %> </div>
+            <% } %>
+        </div>
+        <div class="accordion my-5" id="accordionDashboard">
+          <div class="row">
+            <div class="col-md-6">
+              <!-- Add New Project -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h3><small><i class="fas fa-plus"></i></small> <strong>Track a new project</strong></h3>
+                  </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionDashboard">
+                  <div class="accordion-body">
+                    <form action="/newProject" method="POST" class="mt-3">
+                      <div class="mb-3">
+                        <input type="text" class="form-control" required id="project-name" name="projectName" placeholder="Nome del progetto">
+                      </div>
+                      <div class="mb-3">
+                        <label for="project-color">Etichetta:</label>
+                        <input type="color" class="form-control mt-2" style="width:50px;" required id="project-color" name="projectColor" value="#ff0000">
+                      </div>
+                      <button type="submit" class="btn btn-success"><strong>Add</strong></button>
+                      <% if (error && error.length > 0) { %>
+                        <div class="alert alert-danger mt-3 flash-message" role="alert"><i class="fas fa-times-circle"></i>&nbsp;&nbsp; <%= error %> </div>
+                      <% } %>
+                    </form>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-
-          <!-- Add New Track -->
-          <% if(Object.keys(selectProjects).length > 0) { %>
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="headingThree">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-                <h3><small><i class="fas fa-plus"></i></small> <strong>Add manually a new track</strong></h3>
-              </button>
-            </h2>
-            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionDashboard">
-              <div class="accordion-body">
-                <form action="/newTrack" method="POST" class="mt-3">
-                  <div class="mb-3">
-                    <label for="track_project_id" class="mb-1">Project:</label>
-                    <select name="track_project_id" class="form-select" id="track_project_id">
-                    <% selectProjects.forEach(item => { %>
-                      <option value="<%= item.Id %>"><%= item.Name %></option>
-                    <% }); %>
-                    </select>
+            <div class="col-md-6">
+              <!-- Add New Track -->
+              <% if(Object.keys(selectProjects).length > 0) { %>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                      <h3><small><i class="fas fa-plus"></i></small> <strong>Add manually a new track</strong></h3>
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionDashboard">
+                    <div class="accordion-body">
+                      <form action="/newTrack" method="POST" class="mt-3">
+                        <div class="mb-3">
+                          <label for="track_project_id" class="mb-1">Project:</label>
+                          <select name="track_project_id" class="form-select" id="track_project_id">
+                          <% selectProjects.forEach(item => { %>
+                            <option value="<%= item.Id %>"><%= item.Name %></option>
+                          <% }); %>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label for="trackStartTime" class="mb-1">Start Time:</label>
+                          <input type="datetime-local" class="form-control" required name="track_start_time" id="trackStartTime">
+                        </div>
+                        <div class="mb-3">
+                          <label for="trackEndTime" class="mb-1">End Time:</label>
+                          <input type="datetime-local" class="form-control" required name="track_end_time" id="trackEndTime">
+                        </div>
+                        <div class="mb-3">
+                          <textarea class="form-control" name="track_description" rows="5" style="resize:none;" placeholder="Note"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success"><strong>Add</strong></button>
+                      </form>
+                    </div>
                   </div>
-                  <div class="mb-3">
-                    <label for="trackStartTime" class="mb-1">Start Time:</label>
-                    <input type="datetime-local" class="form-control" required name="track_start_time" id="trackStartTime">
-                  </div>
-                  <div class="mb-3">
-                    <label for="trackEndTime" class="mb-1">End Time:</label>
-                    <input type="datetime-local" class="form-control" required name="track_end_time" id="trackEndTime">
-                  </div>
-                  <div class="mb-3">
-                    <textarea class="form-control" name="track_description" rows="5" style="resize:none;" placeholder="Note"></textarea>
-                  </div>
-                  <button type="submit" class="btn btn-success"><strong>Add</strong></button>
-                </form>
-              </div>
+                </div>
+                <% } %>
             </div>
           </div>
-          <% } %>
-
         </div>
 
         <% if (UpdateInsertTrackError && UpdateInsertTrackError.length > 0) { %>

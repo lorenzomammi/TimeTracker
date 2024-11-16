@@ -78,3 +78,9 @@ body{
     color:#222!important;
     margin-bottom:5px;
 }
+#all-projects-container{
+    background-color:#fff;
+    color:#222;
+    padding:20px;
+    border-radius:5px;
+}

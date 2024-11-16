@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("./partials/header.ejs") %>
+    <title>Registration</title>
+</head>
+<body>
+    <div class="container">
+      <div class="modal-box">
+        <h1 class="mb-4">Registration</h1>
+        <form action="/register" method="POST">
+            <div class="mb-3">
+                <input type="text" class="form-control" required id="register-name" name="name" placeholder="Nome">
+            </div>
+            <div class="mb-3">
+              <input type="email" class="form-control" required id="register-email" name="email" placeholder="Indirizzo email">
+            </div>
+            <div class="mb-4">
+              <input type="password" class="form-control" required id="register-password" name="password" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-success">Register</button>
+            <% if (error && error.length > 0) { %>
+              <div class="alert alert-danger mt-3 flash-message" role="alert"><i class="fas fa-times-circle"></i>&nbsp;&nbsp;<%= error %> </div>
+            <% } %>
+            <div class="mt-3">
+                Se hai già un account <a href="/login">Accedi</a>
+            </div>
+          </form>
+        </div>
+    </div>
+  <%- include("./partials/footer.ejs") %>

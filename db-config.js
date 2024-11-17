@@ -10,6 +10,7 @@ const pool = new Pool({
     port: 5432
   });
 
+/*
 exports.testConnection = async () => {
     try {
         const query = `SELECT "Id", "Email" FROM "Users" WHERE "Id" is not null`;
@@ -20,5 +21,6 @@ exports.testConnection = async () => {
         return [];
     }
 }
+*/
 
 module.exports = pool;

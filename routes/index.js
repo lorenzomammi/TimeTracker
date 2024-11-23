@@ -5,6 +5,7 @@ const {register} = require("../controllers/userRegister");
 const {login} = require("../controllers/userLogin");
 const {getSelectProjects} = require("../functions/globFunctions");
 
+
 const router = express.Router();
 
 // Middleware per il controllo della sessione sulle pagine statiche
@@ -97,5 +98,6 @@ router.post('/run', runTracker);
 /* Tracks Routes */
 router.post('/updateTrack', updateTrack);
 router.post('/newTrack', insertTrack);
+
 
 module.exports = router;

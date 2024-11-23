@@ -2,8 +2,6 @@ const { Pool } = require('pg');
 
 let env = process.env;
 
-console.log(env.POSTGRES_USER + '//' + env.DB_HOST + '//' + env.DATABASE + env.POSTGRES_PDW);
-
 const pool = new Pool({
     user: env.POSTGRES_USER,
     host: env.DB_HOST,

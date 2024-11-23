@@ -5,6 +5,11 @@ body{
     flex-direction: column;
     background-color:#212529;
 }
+#header{
+    background-color:#181818;
+    border-bottom:1px solid #696969!important;
+    margin-bottom:40px!important;
+}
 #dashboard-main-content{
     color:#fff;
 }
@@ -83,4 +88,22 @@ body{
     color:#222;
     padding:20px;
     border-radius:5px;
+}
+
+@media only screen and (max-width: 480px){
+    .modal-box{
+        width:100%;
+    }
+    #all-tracks .track-wrap{
+        overflow:auto;
+    }
+    .mobile-mrg{
+        margin-bottom:20px;
+    }
+    #all-projects td:not(.mobile-timer-alignment){
+        display:block;
+    }
+    #all-projects td:nth-child(2){
+        text-align:center;
+    }
 }

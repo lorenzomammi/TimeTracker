@@ -56,6 +56,8 @@ exports.updateTrackTimeSpent = async (project_id, req, track_id, method) => {
             String(baseDuration.seconds()).padStart(2, '0')
         ].join(':');
 
+        console.log(totalTimeSpent);
+
         const updateProject = await pool.query(
             `UPDATE "Projects" 
                 SET "Time_spent" = $1
@@ -79,4 +81,40 @@ exports.updateTrackTimeSpent = async (project_id, req, track_id, method) => {
         req.flash('UpdateInsertTrackError', 'Errore in fase di ' + flashLabel);
         return true;
     }
+}
+
+
+exports.deleteTrackTimeSpent = async (track_id, req) => {
+    const Track = await pool.query(`SELECT "Total_time", "Project_id" FROM "Track" WHERE "Id" = $1;`, [track_id]);
+    if(Track.rows.length > 0){
+        const Project = await pool.query(`SELECT "Time_spent" FROM "Projects" WHERE "Id" = $1 AND "User_id" = $2;`, [Track.rows[0].Project_id, req.session.userId]);
+        if(Project.rows.length > 0){
+            const time1 = moment.duration(Project.rows[0].Time_spent);
+            const time2 = moment.duration(Track.rows[0].Total_time);
+            const timeDiff = time1.subtract(time2);
+
+            const totalTimeSpent = [
+                String(timeDiff.hours()).padStart(2, '0'),
+                String(timeDiff.minutes()).padStart(2, '0'),
+                String(timeDiff.seconds()).padStart(2, '0')
+            ].join(':');
+
+            const updateProject = await pool.query(
+                `UPDATE "Projects" 
+                    SET "Time_spent" = $1
+                    WHERE "Id" = $2;`,
+                [totalTimeSpent, Track.rows[0].Project_id]);
+
+            if(updateProject.rowCount > 0){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }else{
+        return false;
+    }
+
 }

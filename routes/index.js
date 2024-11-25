@@ -1,6 +1,6 @@
 const express = require('express');
 const {newProject, getAllProjects, runTracker, pauseTracker, setActiveTimer, getAllTracks} = require("../controllers/Projects");
-const {updateTrack, insertTrack, trackReport} = require("../controllers/Tracks");
+const {updateTrack, insertTrack, deleteTrack, trackReport} = require("../controllers/Tracks");
 const {register} = require("../controllers/userRegister");
 const {login} = require("../controllers/userLogin");
 const {getSelectProjects} = require("../functions/globFunctions");
@@ -98,6 +98,7 @@ router.post('/run', runTracker);
 /* Tracks Routes */
 router.post('/updateTrack', updateTrack);
 router.post('/newTrack', insertTrack);
+router.post('/deleteTrack', deleteTrack);
 
 
 module.exports = router;

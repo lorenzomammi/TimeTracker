@@ -1,6 +1,6 @@
 const pool  =  require("../db-config");
 const moment = require('moment-timezone');
-const {formatTimer, trackTimeDiff, updateTrackTimeSpent} = require("../functions/globFunctions");
+const {formatTimer, trackTimeDiff, updateTrackTimeSpent, deleteTrackTimeSpent} = require("../functions/globFunctions");
 
 exports.updateTrack = async (req, res) => {
 
@@ -71,6 +71,40 @@ exports.insertTrack = async (req, res) => {
     }catch(e){
         console.log(e);
         req.flash('UpdateInsertTrackError', 'Database error.');
+        res.redirect('/');
+    }
+}
+
+exports.deleteTrack = async (req, res) => {
+    const track_id = req.body.track_id;
+    try{
+        if(track_id){
+            const updateProjectTS = await deleteTrackTimeSpent(track_id, req);
+            if(updateProjectTS == true){
+                const deleteTrack = await pool.query(
+                    `DELETE FROM "Track" 
+                    WHERE "Id" = $1;`,
+                    [track_id]
+                );
+                if(deleteTrack.rowCount > 0){
+                    req.flash('UpdateInsertTrackSuccess', 'Track con id: '+ track_id +' cancellato con successo');
+                    res.redirect('/');
+                }else{
+                    req.flash('UpdateInsertTrackError', 'Errore in fase di cancellazione');
+                    res.redirect('/');
+                }
+            }else{
+                req.flash('UpdateInsertTrackError', 'Errore di database');
+                res.redirect('/');
+            }
+            
+        }else{
+            req.flash('UpdateInsertTrackError', 'L\'eliminazione del record non è andata a buon fine.');
+            res.redirect('/');
+        }
+        
+    }catch(e){
+        console.log(e);
         res.redirect('/');
     }
 }

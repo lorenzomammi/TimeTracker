@@ -201,7 +201,7 @@
                     <td><%= item.Total_time %></td>
                     <td>
                       <% if (item.End_time) { %>
-                      <button class="crud-track" data-bs-toggle="modal" data-bs-target="#modalEditTrack-<%= item.Id %>"><i class="far fa-edit"></i></button>
+                      <button class="crud-track" data-bs-toggle="modal" data-bs-target="#modalEditTrack-<%= item.Id %>"><i class="far fa-edit"></i></button>&nbsp;&nbsp;
                       <!-- Modal Crud Edit -->
                       <div class="modal fade" id="modalEditTrack-<%= item.Id %>" tabindex="-1" aria-labelledby="stop-timer-modal-header" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
@@ -227,6 +227,34 @@
                                 </div>
                                 <button type="submit" class="btn btn-success">Update</button>
                               </form> 
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Modal Crud Delete -->
+                      <button class="crud-track ml-3" data-bs-toggle="modal" data-bs-target="#modalDeleteTrack-<%= item.Id %>"><i class="fas fa-trash"></i></button>
+
+                      <div class="modal fade" id="modalDeleteTrack-<%= item.Id %>" tabindex="-1" aria-labelledby="delete-track-modal-header" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5 text-dark" id="delete-track-modal-header"><strong>Delete Track</strong></h1>
+                            </div>
+                            <div class="modal-body">
+                              <p class="mb-4">Are you sure you want to delete this Track?<br><br>
+                                <strong>Track ID: </strong> <i><%= item.Id %></i><br>
+                                <strong>Project name:</strong> <i><%= item.Name %></i><br>
+                                <strong>Start time:</strong> <i><%= item.Start_time %></i><br>
+                                <strong>End time:</strong> <i><%= item.End_time %></i>
+                              </p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Go back</button>
+                              <form action="/deleteTrack" method="POST" class="delete-track">
+                                <input type="hidden" value="<%= item.Id %>" name="track_id">
+                                <button type="submit" class="btn btn-success">Yes</button>
+                              </form>
                             </div>
                           </div>
                         </div>

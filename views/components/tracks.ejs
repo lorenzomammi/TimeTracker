@@ -1,0 +1,159 @@
+<% if (flashMessages.UpdateInsertTrackError && flashMessages.UpdateInsertTrackError.length > 0) { %>
+    <div class="alert alert-danger mb-3 flash-message" role="alert"><i class="fas fa-check-circle"></i>&nbsp;&nbsp;<%= flashMessages.UpdateInsertTrackError %> </div>
+<% } %>
+<% if (flashMessages.UpdateInsertTrackSuccess && flashMessages.UpdateInsertTrackSuccess.length > 0) { %>
+    <div class="alert alert-success mt-3 flash-message" role="alert"><i class="fas fa-check-circle"></i>&nbsp;&nbsp;<%= flashMessages.UpdateInsertTrackSuccess %> </div>
+<% } %>
+<% if(Object.keys(AllTracks).length != 0) { %>
+    <div id="all-tracks">
+      <div class="track-wrap">
+        <table class="table table-light table-striped">
+          <thead>
+            <tr>
+              <th>Progetto</th>
+              <th>Note</th>
+              <th>Start time</th>
+              <th>End time</th>
+              <th>Total time</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% AllTracks.data.forEach(item => { %>
+              <tr>
+                <td><%= item.Name %></td>
+                <td style="max-width:300px;"><%= item.Description %></td>
+                <td><i><%= item.Start_time %></i></td>
+                <td><i><%= item.End_time %></i></td>
+                <td><%= item.Total_time %></td>
+                <td>
+                  <% if (item.End_time) { %>
+                  <button class="crud-track" data-bs-toggle="modal" data-bs-target="#modalEditTrack-<%= item.Id %>"><i class="far fa-edit"></i></button>&nbsp;&nbsp;
+                  <!-- Modal Crud Edit -->
+                  <div class="modal fade" id="modalEditTrack-<%= item.Id %>" tabindex="-1" aria-labelledby="stop-timer-modal-header" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5 text-dark" id="stop-timer-modal-header"><strong>Update Track</strong></h1>
+                        </div>
+                        <div class="modal-body">
+                          <form action="/updateTrack" method="POST" class="update-track">
+                            <input type="hidden" value="<%= item.Id %>" name="track_id">
+                            <input type="hidden" value="<%= item.Project_id %>" name="project_id">
+                            <div class="mb-3">
+                              <label for="updateStartTime">Start Time:</label>
+                              <input type="datetime-local" class="form-control" value="<%= item.Start_time_update %>" required name="start_time" id="updateStartTime">
+                            </div>
+                            <div class="mb-3">
+                              <label for="updateEndTime">End Time:</label>
+                              <input type="datetime-local" class="form-control" value="<%= item.End_time_update %>" required name="end_time" id="updateEndTime">
+                            </div>
+                            <div class="mb-3">
+                              <label for="updateDescription">Note:</label>
+                              <textarea class="form-control" name="description" id="updateDescription" rows="5" style="resize:none;"><%= item.Description %></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">Update</button>
+                          </form> 
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Modal Crud Delete -->
+                  <button class="crud-track ml-3" data-bs-toggle="modal" data-bs-target="#modalDeleteTrack-<%= item.Id %>"><i class="fas fa-trash"></i></button>
+
+                  <div class="modal fade" id="modalDeleteTrack-<%= item.Id %>" tabindex="-1" aria-labelledby="delete-track-modal-header" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5 text-dark" id="delete-track-modal-header"><strong>Delete Track</strong></h1>
+                        </div>
+                        <div class="modal-body">
+                          <p class="mb-4">Are you sure you want to delete this Track?<br><br>
+                            <strong>Track ID: </strong> <i><%= item.Id %></i><br>
+                            <strong>Project name:</strong> <i><%= item.Name %></i><br>
+                            <strong>Start time:</strong> <i><%= item.Start_time %></i><br>
+                            <strong>End time:</strong> <i><%= item.End_time %></i>
+                          </p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Go back</button>
+                          <form action="/deleteTrack" method="POST" class="delete-track">
+                            <input type="hidden" value="<%= item.Id %>" name="track_id">
+                            <button type="submit" class="btn btn-success">Yes</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <% } %>
+                </td>
+              </tr>
+
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+
+      <nav>
+        <ul class="pagination justify-content-center">
+          <li class="page-item <%= AllTracks.currentPage == 1 ? 'disabled' : '' %>">
+            <a class="page-link" href="?page=<%= AllTracks.currentPage - 1 %>#all-tracks" tabindex="-1">Prev</a>
+          </li>
+
+          <% for(let i = 1; i <= AllTracks.totalPages; i++) { %>
+          <li class="page-item <%= i === AllTracks.currentPage ? 'active' : '' %>">
+            <a href="?page=<%= i %>#all-tracks" class="page-link">
+               <%= i %>
+            </a>
+          </li>
+          <% } %>
+
+          <li class="page-item <%= AllTracks.currentPage == AllTracks.totalPages ? 'disabled' : '' %>">
+            <a href="?page=<%= AllTracks.currentPage + 1 %>#all-tracks" class="page-link">Succ</a>
+          </li>
+        </ul>
+      </nav>
+      <% if(Object.keys(reportData).length > 0) { %>
+      <h2 class="text-light mt-5"><small><i class="fas fa-chart-pie"></i></small>&nbsp;<strong>Monthly report</strong></h1>
+      <div class="track-wrap">
+        <table class="table table-light table-bordered mt-3">
+          <thead>
+              <tr>
+                  <th>Year</th>
+                  <th>Month</th>
+                  <th>Project</th>
+                  <th>Total time</th>
+              </tr>
+          </thead>
+          <tbody>
+              <% for (const year in reportData) { %>
+                  <% for (const month in reportData[year]) { %>
+                      <tr>
+                          <!-- Riga per ogni progetto nel mese e anno corrente -->
+                          <% reportData[year][month].forEach((project, index) => { %>
+                              <tr>
+                                  <!-- Mostra l'anno solo nella prima riga del blocco mese -->
+                                  <% if (index === 0) { %>
+                                      <td rowspan="<%= reportData[year][month].length %>"><strong><%= year %></strong></td>
+                                  <% } %>
+                                  
+                                  <!-- Mostra il mese solo nella prima riga del blocco mese -->
+                                  <% if (index === 0) { %>
+                                      <td rowspan="<%= reportData[year][month].length %>"><strong><%= month %></strong></td>
+                                  <% } %>
+      
+                                  <td><%= project.projectName %></td>
+                                  <td><%= project.totalTime %></td>
+                              </tr>
+                          <% }); %>
+                      </tr>
+                  <% } %>
+              <% } %>
+          </tbody>
+      </table>
+    </div>
+    <% } %>
+</div>
+<% } %>

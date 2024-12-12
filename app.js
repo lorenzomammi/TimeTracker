@@ -18,6 +18,19 @@ app.use(session({
     cookie: { maxAge: 14400000 } // 4 Hours
 }));
 
+app.use((req, res, next) => {
+    res.locals.flashMessages = {
+        error: req.flash('SubmissionError'),
+        success: req.flash('SubmissionSuccess'),
+        trackError: req.flash('ProjectError'),
+        UpdateInsertTrackError: req.flash('UpdateInsertTrackError'),
+        UpdateInsertTrackSuccess: req.flash('UpdateInsertTrackSuccess'),
+        updateDeleteProjectErr: req.flash('updateDeleteProjectErr'),
+        updateDeleteProjectSucc: req.flash('updateDeleteProjectSucc'),
+    };
+    next();
+});
+
 app.use(express.static("public"));
 
 app.use(express.json());

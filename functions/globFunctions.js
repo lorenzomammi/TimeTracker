@@ -56,8 +56,6 @@ exports.updateTrackTimeSpent = async (project_id, req, track_id, method) => {
             String(baseDuration.seconds()).padStart(2, '0')
         ].join(':');
 
-        console.log(totalTimeSpent);
-
         const updateProject = await pool.query(
             `UPDATE "Projects" 
                 SET "Time_spent" = $1

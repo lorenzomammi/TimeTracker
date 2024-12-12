@@ -1,0 +1,35 @@
+<script>
+    $(document).ready(function() {
+
+      startTimer = function(Selector) {
+        const timerElement = $("#timer-" + Selector);
+        let [hours, minutes, seconds] = timerElement.text().split(':').map(Number);
+
+        const timerInterval = setInterval(() => {
+            seconds++;
+
+            if (seconds === 60) {
+                seconds = 0;
+                minutes++;
+            }
+            if (minutes === 60) {
+                minutes = 0;
+                hours++;
+            }
+              
+            timerElement.text(
+              String(hours).padStart(2, '0') + ':' + 
+              String(minutes).padStart(2, '0') + ':' + 
+              String(seconds).padStart(2, '0')
+            );
+          }, 1000);
+      }
+
+        let runningProject = $("#running-form input[name='projectId']");
+        if(runningProject.length > 0){
+          startTimer(runningProject.val());
+        }
+
+    });
+    
+</script>

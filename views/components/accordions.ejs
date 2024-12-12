@@ -1,0 +1,69 @@
+<div class="accordion my-5" id="accordionDashboard">
+    <div class="row">
+      <div class="col-md-6">
+        <!-- Add New Project -->
+        <div class="accordion-item mobile-mrg">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <h3><small><i class="fas fa-plus"></i></small> <strong>Track a new project</strong></h3>
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionDashboard">
+            <div class="accordion-body">
+              <form action="/newProject" method="POST" class="mt-3">
+                <div class="mb-3">
+                  <input type="text" class="form-control" required id="project-name" name="projectName" placeholder="Nome del progetto">
+                </div>
+                <div class="mb-3">
+                  <label for="project-color">Etichetta:</label>
+                  <input type="color" class="form-control mt-2" style="width:50px;" required id="project-color" name="projectColor" value="#ff0000">
+                </div>
+                <button type="submit" class="btn btn-success"><strong>Add</strong></button>
+                <% if (flashMessages.error && flashMessages.error.length > 0) { %>
+                  <div class="alert alert-danger mt-3 flash-message" role="alert"><i class="fas fa-times-circle"></i>&nbsp;&nbsp; <%= flashMessages.error %> </div>
+                <% } %>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <!-- Add New Track -->
+        <% if(Object.keys(selectProjects).length > 0) { %>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <h3><small><i class="fas fa-plus"></i></small> <strong>Add manually a new track</strong></h3>
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionDashboard">
+              <div class="accordion-body">
+                <form action="/newTrack" method="POST" class="mt-3">
+                  <div class="mb-3">
+                    <label for="track_project_id" class="mb-1">Project (*)</label>
+                    <select name="track_project_id" class="form-select" id="track_project_id">
+                    <% selectProjects.forEach(item => { %>
+                      <option value="<%= item.Id %>"><%= item.Name %></option>
+                    <% }); %>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="trackStartTime" class="mb-1">Start Time (*)</label>
+                    <input type="datetime-local" class="form-control" required name="track_start_time" id="trackStartTime">
+                  </div>
+                  <div class="mb-3">
+                    <label for="trackEndTime" class="mb-1">End Time: <i>(if you leave it blank the project status will be run)</i></label>
+                    <input type="datetime-local" class="form-control" name="track_end_time" id="trackEndTime">
+                  </div>
+                  <div class="mb-3">
+                    <textarea class="form-control" name="track_description" rows="5" style="resize:none;" placeholder="Note"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-success"><strong>Add</strong></button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <% } %>
+      </div>
+    </div>
+  </div>

@@ -82,7 +82,7 @@ body{
 .crud-track i{
     color:#000!important;
 }
-.update-track label{
+.update-track label, .update-project label{
     color:#222!important;
     margin-bottom:5px;
 }
@@ -103,6 +103,19 @@ body{
 .pagination .page-link:focus{
     box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.25)!important;
 }
+.project-crud{
+    width:100px;
+    text-align:center;
+    font-size:18px;
+}
+.update-project{
+    text-align:left;
+}
+.update-project input[type="color"]{
+    width:50px;
+}
+
+
 
 
 @media only screen and (max-width: 480px){
@@ -124,5 +137,8 @@ body{
     #project-color{
         display:block;
         margin-left:0;
+    }
+    .project-crud{
+        width:auto;
     }
 }

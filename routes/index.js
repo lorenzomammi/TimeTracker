@@ -1,5 +1,5 @@
 const express = require('express');
-const {newProject, getAllProjects, runTracker, pauseTracker, setActiveTimer, getAllTracks} = require("../controllers/Projects");
+const {newProject, updateProject, deleteProject, getAllProjects, runTracker, pauseTracker, setActiveTimer, getAllTracks} = require("../controllers/Projects");
 const {updateTrack, insertTrack, deleteTrack, trackReport} = require("../controllers/Tracks");
 const {register} = require("../controllers/userRegister");
 const {login} = require("../controllers/userLogin");
@@ -46,11 +46,6 @@ router.get('/', checkSessionStatic, async (req, res) => {
         res.render('index', { 
             username: req.session.name, 
             email: req.session.email, 
-            error: req.flash('SubmissionError'), 
-            success: req.flash('SubmissionSuccess'),
-            trackError: req.flash('ProjectError'),
-            UpdateInsertTrackError: req.flash('UpdateInsertTrackError'),
-            UpdateInsertTrackSuccess: req.flash('UpdateInsertTrackSuccess'),
             projects,
             ActiveTimer,
             AllTracks,
@@ -65,11 +60,11 @@ router.get('/', checkSessionStatic, async (req, res) => {
 });
 
 router.get('/register', checkSessionLogReg, (req, res) => {
-    res.render('register.ejs', { error: req.flash('SubmissionError') });
+    res.render('register.ejs');
 });
 
 router.get('/login', checkSessionLogReg, (req, res) => {
-    res.render('login.ejs', { error: req.flash('SubmissionError'), success: req.flash('SubmissionSuccess') });
+    res.render('login.ejs');
 });
 
 router.get('/logout', (req, res) => {
@@ -90,6 +85,8 @@ router.post('/login', login);
 
 /* Projects Routes */
 router.post('/newProject', newProject);
+router.post('/updateProject', updateProject);
+router.post('/deleteProject', deleteProject);
 
 /* Timer Routes */
 router.post('/pause', pauseTracker);

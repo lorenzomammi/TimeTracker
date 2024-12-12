@@ -177,6 +177,77 @@ exports.newProject = async (req, res) => {
     }
 };
 
+/* Handler per update di un progetto esistente */
+exports.updateProject = async (req, res) => {
+    const { project_id, project_name, project_color } = req.body;
+
+    try{
+        if(project_id && project_name && project_color){
+
+            const updateProject = await pool.query(
+                `UPDATE "Projects" 
+                    SET "Name" = $1, "Color" = $2
+                    WHERE "Id" = $3;`,
+                [project_name, project_color, project_id]
+            );
+
+            if(updateProject.rowCount > 0){
+                req.flash('updateDeleteProjectSucc', 'Il progetto "'+ project_name +'" è stato aggiornato con successo!');
+                res.redirect('/');
+            }else{
+                req.flash('updateDeleteProjectErr', 'Errore in fase di update');
+                res.redirect('/');
+            }
+
+        }else{
+            req.flash('updateDeleteProjectErr', 'I campi sono tutti obbligatori!');
+            res.redirect('/');
+        }
+    }catch(err){
+        console.log(err);
+        req.flash('updateDeleteProjectErr', 'Database error occurred while updating a project!');
+        res.redirect('/');
+    }
+};
+
+
+/* Handler per la cancellazione di un progetto esistente */
+exports.deleteProject = async (req, res) => {
+    const { project_id } = req.body;
+
+    try{
+        if(project_id){
+
+            const checkExistingTracks = await pool.query(`SELECT "Id" FROM "Track" WHERE "Project_id" = $1;`, [project_id])
+
+            if(checkExistingTracks.rowCount == 0){
+                const deleteProject = await pool.query(
+                    `DELETE FROM "Projects" 
+                    WHERE "Id" = $1;`,
+                    [project_id]
+                );
+                if(deleteProject.rowCount > 0){
+                    req.flash('updateDeleteProjectSucc', 'Il progetto con ID: "'+ project_id +'" è stato cancellato con successo!');
+                    res.redirect('/');
+                }else{
+                    req.flash('updateDeleteProjectErr', 'Error during the project deletion');
+                    res.redirect('/');
+                }
+            }else{
+                req.flash('updateDeleteProjectErr', 'In order to delete the project you should delete all tracks associated to it before.');
+                res.redirect('/');
+            }
+        }else{
+            req.flash('updateDeleteProjectErr', 'I campi sono tutti obbligatori!');
+            res.redirect('/');
+        }
+    }catch(err){
+        console.log(err);
+        req.flash('updateDeleteProjectErr', 'Database error occurred while deleting a project!');
+        res.redirect('/');
+    }
+};
+
 exports.getAllProjects = async (userId) => {
     try{
         const project = await pool.query(`SELECT * FROM "Projects" WHERE "User_id" = $1 ORDER BY "Name" ASC;`, [userId])

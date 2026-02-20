@@ -7,7 +7,7 @@ const pool = new Pool({
     host: env.DB_HOST,
     database: env.DATABASE,
     password: env.POSTGRES_PDW,
-    port: 5432
+    port: env.DB_PORT
   });
 
 /*
